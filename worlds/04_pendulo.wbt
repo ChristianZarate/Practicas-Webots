@@ -1,0 +1,94 @@
+#VRML_SIM R2025a utf8
+
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/floors/protos/RectangleArena.proto"
+
+WorldInfo {
+  basicTimeStep 8
+}
+Viewpoint {
+  orientation -0.05 0.15 0.99 1.9
+  position 0.9 -1.1 0.55
+}
+TexturedBackground {
+}
+TexturedBackgroundLight {
+}
+RectangleArena {
+  floorSize 1 1
+}
+Solid {
+  translation 0 0 0.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.4 0.4 0.4
+      }
+      geometry DEF POSTE Box {
+        size 0.02 0.02 0.8
+      }
+    }
+  ]
+  boundingObject USE POSTE
+}
+Robot {
+  translation 0 0 0.78
+  children [
+    HingeJoint {
+      jointParameters HingeJointParameters {
+        axis 0 1 0
+        anchor 0 0 0
+      }
+      device [
+        RotationalMotor {
+          name "pendulum_motor"
+          maxTorque 100
+        }
+        PositionSensor {
+          name "pendulum_sensor"
+        }
+      ]
+      endPoint Solid {
+        translation 0 0 -0.3
+        rotation 0 1 0 0
+        children [
+          DEF BRAZO Shape {
+            appearance PBRAppearance {
+              baseColor 0.1 0.6 0.9
+            }
+            geometry Box {
+              size 0.02 0.02 0.6
+            }
+          }
+          Solid {
+            translation 0 0 -0.3
+            children [
+              DEF MASA Shape {
+                appearance PBRAppearance {
+                  baseColor 0.9 0.2 0.1
+                }
+                geometry Sphere {
+                  radius 0.05
+                }
+              }
+            ]
+            boundingObject USE MASA
+            physics Physics {
+              density -1
+              mass 0.5
+            }
+          }
+        ]
+        name "pendulum_arm"
+        boundingObject USE BRAZO
+        physics Physics {
+          density -1
+          mass 0.2
+        }
+      }
+    }
+  ]
+  name "pendulo"
+  controller "pendulo_pid"
+}
